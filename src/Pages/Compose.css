@@ -1,0 +1,85 @@
+.compose {
+ display: flex;
+ gap: 1rem;
+ flex-wrap: wrap;
+ margin: 1rem 0;
+ /* background-color: red; */
+}
+
+.compose > ul {
+ display: flex;
+ flex-direction: column;
+ flex: 1;
+ gap: 0.6rem;
+ border: 1px solid rgba(253, 255, 252, 0.3);
+ border-radius: 0.5rem;
+ padding: 0.5rem;
+ list-style: none;
+}
+
+.compose h2 {
+ display: flex;
+ justify-content: space-between;
+}
+
+.compose > ul > li {
+ display: flex;
+ flex-direction: column;
+ gap: 0.5rem;
+}
+
+.compose h3 {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+}
+
+.compose > ul > li > ul {
+ display: flex;
+ flex-direction: column;
+ gap: 0.5rem;
+}
+
+.compose > ul > li > ul > li {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ gap: 0.25rem;
+ background-color: #151535;
+ width: 100%;
+ padding: 0.5rem;
+ border-radius: 0.5rem;
+}
+
+.arrow {
+ border: solid #fdfffc;
+ border-width: 0 0.05rem 0.05rem 0;
+ display: block;
+ width: 0.4rem;
+ height: 0.4rem;
+ /* -webkit-transform: rotate(45deg); */
+ transition: 0.3s ease;
+}
+
+.arrow.down {
+ transform: translateX(calc(-0.207106781185 * 0.4rem))
+  translateY(calc(-0.35355339 * 0.2rem)) rotate(45deg);
+}
+
+.arrow.up {
+ transform: translateX(calc(-0.207106781185 * 0.4rem))
+  translateY(calc(0.35355339 * 0.2rem)) rotate(-135deg);
+}
+
+.btn {
+ padding: 0.25rem;
+ border-radius: 0.25rem;
+}
+
+.btn.add {
+ background-color: #3b6d37;
+}
+
+.btn.remove {
+ background-color: #bb2901;
+}
