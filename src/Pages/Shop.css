@@ -1,9 +1,3 @@
-.shop {
- display: flex;
- gap: 1rem;
- margin: 1rem 20vw;
-}
-
 .shop > ul {
  display: flex;
  flex-direction: column;
@@ -14,6 +8,7 @@
 
 .shop > ul > h2 {
  display: flex;
+ flex-wrap: wrap;
  justify-content: space-between;
 }
 
@@ -48,4 +43,10 @@
  width: 100%;
  padding: 0.5rem;
  border-radius: 0.5rem;
+}
+
+.shop > ul > li > ul > li.low-vision {
+ flex-direction: column;
+ justify-content: flex-start;
+ align-items: initial;
 }

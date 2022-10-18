@@ -4,7 +4,7 @@ import Axios from "axios";
 
 import "./Shop.css";
 
-const Shop = () => {
+const Shop = ({ lowVisionOn }) => {
  const [state, setState] = useState();
 
  const navigateTo = useNavigate();
@@ -58,7 +58,7 @@ const Shop = () => {
 
  if (!state.rightColumn) {
   return (
-   <div className="shop">
+   <div className={`content-wrapper shop ${lowVisionOn ? "low-vision" : ""}`}>
     <ul>
      <h2>Shop</h2>
      <li>
@@ -75,9 +75,10 @@ const Shop = () => {
  }
 
  return (
-  <div className="shop">
+  <div className={`content-wrapper shop ${lowVisionOn ? "low-vision" : ""}`}>
+   {" "}
    <ul>
-    <h2>
+    {/* <h2>
      Shop
      <button
       className="btn done"
@@ -85,7 +86,7 @@ const Shop = () => {
      >
       Done
      </button>
-    </h2>
+    </h2> */}
     {Object.keys(state.rightColumn.products).map(category => {
      if (state.rightColumn.products[category].length === 0) return null;
      else
@@ -124,7 +125,10 @@ const Shop = () => {
          }
         >
          {state.rightColumn.products[category].map((product, index) => (
-          <li key={product._id}>
+          <li
+           className={`${lowVisionOn ? "low-vision" : ""}`}
+           key={product._id}
+          >
            <span
             style={{
              textDecorationLine: product.inCart ? "line-through" : "none",

@@ -15,3 +15,11 @@ Get rid of <i> it is not correctly used
 No margins for mobile
 
 Make alert appear once Done is clcked
+
+Safaris 300% font size is not enough
+
+With large font size UI goes wild
+
+Introduce error boundaries
+
+Chrome mobile fucks up 100vh

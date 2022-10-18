@@ -3,7 +3,9 @@ import Axios from "axios";
 
 import "./Compose.css";
 
-const Compose = () => {
+import Alert from "../Components/Alert";
+
+const Compose = ({ lowVisionOn }) => {
  const [state, setState] = useState();
 
  useEffect(() => {
@@ -51,12 +53,38 @@ const Compose = () => {
 
  if (!state) return <div>Loading...</div>;
 
+ if (state.alertToDisplay)
+  return (
+   <Alert
+    cancellationCallback={() =>
+     setState(current => {
+      return {
+       ...current,
+       alertToDisplay: !current.alertToDisplay,
+      };
+     })
+    }
+   />
+  );
+
  return (
-  <div className="compose">
+  <div className={`content-wrapper compose ${lowVisionOn ? "low-vision" : ""}`}>
    {/* <button>Expand/collapse all categpries</button> */}
    <ul>
     <h2>
-     Products <button>&#43;</button>
+     Products
+     <button
+      onClick={() =>
+       setState(current => {
+        return {
+         ...current,
+         alertToDisplay: !current.alertToDisplay,
+        };
+       })
+      }
+     >
+      +
+     </button>
     </h2>
     {Object.keys(state.leftColumn.products).map(category => {
      if (state.leftColumn.products[category].length === 0) return null;
@@ -96,8 +124,11 @@ const Compose = () => {
          }
         >
          {state.leftColumn.products[category].map((product, index) => (
-          <li key={product._id}>
-           {product.name}
+          <li
+           className={lowVisionOn ? "low-vision" : ""}
+           key={product._id}
+          >
+           <div>{product.name}</div>
            <button
             className="btn add"
             onClick={() => switchColumns(category, index, "rightColumn")}
@@ -153,7 +184,10 @@ const Compose = () => {
             }
            >
             {state.rightColumn.products[category].map((product, index) => (
-             <li key={product._id}>
+             <li
+              className={lowVisionOn ? "low-vision" : ""}
+              key={product._id}
+             >
               {product.name}
               <button
                className="btn remove"
