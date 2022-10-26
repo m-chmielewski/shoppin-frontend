@@ -1,22 +1,18 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
 
-import Alert from "../Components/Alert";
-
 import "./Compose.css";
 
 const Compose = ({ lowVisionOn }) => {
- const [state, setState] = useState();
-
- const [dropdowns, setDropdowns] = useState(); // products and list
+ const [products, setProducts] = useState();
+ const [productsToAdd, setProductsToAdd] = useState();
+ const [productsOnList, setProductsOnList] = useState();
+ const [dropdowns, setDropdowns] = useState({ toAdd: {}, onList: {} }); // products and list
 
  useEffect(() => {
   Axios.get(`${process.env.REACT_APP_BACKEND_URL}/list/`)
    .then(response => {
-    setState(current => ({
-     ...current,
-     ...response.data,
-    }));
+    setProducts(Array(...response.data));
    })
    .catch(error => {
     console.log(error);
@@ -24,96 +20,67 @@ const Compose = ({ lowVisionOn }) => {
  }, []);
 
  useEffect(() => {
-  if (state) {
-   Axios.post(`${process.env.REACT_APP_BACKEND_URL}/list/`, state);
+  if (products) {
+   Axios.post(`${process.env.REACT_APP_BACKEND_URL}/list/`, products).catch(
+    error => console.log(error)
+   );
   }
- }, [state]);
+ }, [products]);
 
- const switchColumns = (category, index, target) => {
-  const source = target === "leftColumn" ? "rightColumn" : "leftColumn";
-  setState(current => {
-   const mutableSourceArray = current[source].products[category].slice();
-   const mutableTargetArray =
-    current[target]?.products?.[category]?.slice() ?? [];
-   const selectedProduct = mutableSourceArray.splice(index, 1);
-   mutableTargetArray.push(selectedProduct[0]);
-   return {
-    ...current,
-    [source]: {
-     ...current[source],
-     products: {
-      ...current[source].products,
-      [category]: mutableSourceArray,
-     },
-    },
-    [target]: {
-     ...current[target],
-     products: {
-      ...current[target]?.products,
-      [category]: mutableTargetArray,
-     },
-    },
-   };
+ useEffect(() => {
+  if (products) {
+   const tempToAdd = {};
+   const tempOnList = {};
+   products.forEach(product => {
+    if (!product.onList) {
+     tempToAdd[product.category]
+      ? tempToAdd[product.category].push(product)
+      : (tempToAdd[product.category] = [product]);
+    } else {
+     tempOnList[product.category]
+      ? tempOnList[product.category].push(product)
+      : (tempOnList[product.category] = [product]);
+    }
+   });
+   setProductsOnList(tempOnList);
+   setProductsToAdd(tempToAdd);
+  }
+ }, [products]);
+
+ const switchProductStatus = product => {
+  setProducts(current => {
+   const mutable = [...current];
+   const productToChange = mutable.find(
+    element => element.name === product.name
+   );
+   if (productToChange.onList) productToChange.inCart = false;
+   productToChange.onList = !productToChange.onList;
+   return mutable;
   });
  };
 
- if (!state) return <div>Loading...</div>;
-
- if (state.alertToDisplay)
-  return (
-   <Alert
-    cancellationCallback={() =>
-     setState(current => {
-      return {
-       ...current,
-       alertToDisplay: !current.alertToDisplay,
-      };
-     })
-    }
-   />
-  );
-
- let categories;
-
- let products = { category: [] };
-
- let list = { cagegory: [] };
+ if (!productsToAdd || !productsOnList) {
+  return <div> Loading...</div>;
+ }
 
  return (
   <div className={`content-wrapper compose ${lowVisionOn ? "low-vision" : ""}`}>
    {/* <button>Expand/collapse all categpries</button> */}
    <ul>
-    <h2>
-     Products
-     <button
-      onClick={() =>
-       setState(current => {
-        return {
-         ...current,
-         alertToDisplay: !current.alertToDisplay,
-        };
-       })
-      }
-     >
-      +
-     </button>
-    </h2>
-    {Object.keys(state.leftColumn.products).map(category => {
-     if (state.leftColumn.products[category].length === 0) return null;
+    <h2>Products</h2>
+    {Object.keys(productsToAdd).map(category => {
+     if (productsToAdd[category].length === 0) return null;
      else
       return (
        <li key={category}>
         <button
          onClick={() =>
-          setState(current => {
+          setDropdowns(current => {
            return {
             ...current,
-            leftColumn: {
-             ...current.leftColumn,
-             dropdowns: {
-              ...current.leftColumn.dropdowns,
-              [category]: !current.leftColumn.dropdowns?.[category],
-             },
+            toAdd: {
+             ...current.toAdd,
+             [category]: !current.toAdd[category],
             },
            };
           })
@@ -122,20 +89,16 @@ const Compose = ({ lowVisionOn }) => {
          <h3>
           {category}
           <i
-           className={`arrow ${
-            state.leftColumn.dropdowns?.[category] ? "up" : "down"
-           }`}
+           className={`arrow ${dropdowns.toAdd[category] ? "up" : "down"}`}
           ></i>
          </h3>
         </button>
         <ul
          style={
-          state.leftColumn.dropdowns?.[category]
-           ? { display: "flex" }
-           : { display: "none" }
+          dropdowns.toAdd[category] ? { display: "flex" } : { display: "none" }
          }
         >
-         {state.leftColumn.products[category].map((product, index) => (
+         {productsToAdd[category].map(product => (
           <li
            className={lowVisionOn ? "low-vision" : ""}
            key={product._id}
@@ -143,7 +106,7 @@ const Compose = ({ lowVisionOn }) => {
            <div>{product.name}</div>
            <button
             className="btn add"
-            onClick={() => switchColumns(category, index, "rightColumn")}
+            onClick={() => switchProductStatus(product)}
            >
             Add
            </button>
@@ -156,63 +119,56 @@ const Compose = ({ lowVisionOn }) => {
    </ul>
    <ul>
     <h2>List</h2>
-    {!state.rightColumn?.products
-     ? null
-     : Object.keys(state.rightColumn?.products).map(category => {
-        if (state.rightColumn.products[category].length === 0) return null;
-        else
-         return (
-          <li key={category}>
+    {Object.keys(productsOnList).map(category => {
+     if (productsOnList[category].length === 0) return null;
+     else
+      return (
+       <li key={category}>
+        <button
+         onClick={() =>
+          setDropdowns(current => {
+           return {
+            ...current,
+            onList: {
+             ...current.onList,
+             [category]: !current.onList[category],
+            },
+           };
+          })
+         }
+        >
+         <h3>
+          {category}
+          <i
+           className={`arrow ${dropdowns?.onList?.[category] ? "up" : "down"}`}
+          ></i>
+         </h3>
+        </button>
+        <ul
+         style={
+          dropdowns?.onList?.[category]
+           ? { display: "flex" }
+           : { display: "none" }
+         }
+        >
+         {productsOnList[category].map((product, index) => (
+          <li
+           className={lowVisionOn ? "low-vision" : ""}
+           key={product._id}
+          >
+           {product.name}
            <button
-            onClick={() =>
-             setState(current => {
-              return {
-               ...current,
-               rightColumn: {
-                ...current.rightColumn,
-                dropdowns: {
-                 ...current.rightColumn.dropdowns,
-                 [category]: !current.rightColumn.dropdowns?.[category],
-                },
-               },
-              };
-             })
-            }
+            className="btn remove"
+            onClick={() => switchProductStatus(product)}
            >
-            <h3>
-             {category}
-             <i
-              className={`arrow ${
-               state.rightColumn.dropdowns?.[category] ? "up" : "down"
-              }`}
-             ></i>
-            </h3>
+            Remove
            </button>
-           <ul
-            style={
-             state.rightColumn.dropdowns?.[category]
-              ? { display: "flex" }
-              : { display: "none" }
-            }
-           >
-            {state.rightColumn.products[category].map((product, index) => (
-             <li
-              className={lowVisionOn ? "low-vision" : ""}
-              key={product._id}
-             >
-              {product.name}
-              <button
-               className="btn remove"
-               onClick={() => switchColumns(category, index, "leftColumn")}
-              >
-               Remove
-              </button>
-             </li>
-            ))}
-           </ul>
           </li>
-         );
-       })}
+         ))}
+        </ul>
+       </li>
+      );
+    })}
    </ul>
   </div>
  );

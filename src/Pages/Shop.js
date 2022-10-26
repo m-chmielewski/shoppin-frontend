@@ -5,58 +5,61 @@ import Axios from "axios";
 import "./Shop.css";
 
 const Shop = ({ lowVisionOn }) => {
- const [state, setState] = useState();
+ const [products, setProducts] = useState();
+ const [productsOnList, setProductsOnList] = useState();
+ const [dropdowns, setDropdowns] = useState({});
 
  const navigateTo = useNavigate();
 
  useEffect(() => {
   Axios.get(`${process.env.REACT_APP_BACKEND_URL}/list/`).then(response => {
-   setState(current => ({
-    ...current,
-    ...response.data,
-   }));
+   setProducts(Array(...response.data));
   });
  }, []);
 
  useEffect(() => {
-  if (state) {
-   Axios.post(`${process.env.REACT_APP_BACKEND_URL}/list/`, state);
+  if (products) {
+   const tempProductsOnList = {};
+   products.forEach(product => {
+    if (product.onList) {
+     tempProductsOnList[product.category]
+      ? tempProductsOnList[product.category].push(product)
+      : (tempProductsOnList[product.category] = [product]);
+    }
+   });
+   setProductsOnList(tempProductsOnList);
   }
- }, [state]);
+ }, [products]);
 
  useEffect(() => {
-  if (state?.current === false) navigateTo("/");
- }, [state?.current]);
+  if (products) {
+   Axios.post(`${process.env.REACT_APP_BACKEND_URL}/list/`, products).catch(
+    error => console.log(error)
+   );
+  }
+ }, [products]);
 
- const changeStatus = (category, index) => {
-  setState(current => {
-   const mutableArray = current.rightColumn.products[category].slice();
-   mutableArray[index].inCart = !mutableArray[index].inCart;
-   return {
-    ...current,
-    rightColumn: {
-     ...current.rightColumn,
-     products: {
-      ...current.rightColumn.products,
-      [category]: mutableArray,
-     },
-    },
-   };
+ const switchProductStatus = product => {
+  setProducts(current => {
+   const mutable = [...current];
+   const productToChange = mutable.find(
+    element => element.name === product.name
+   );
+   productToChange.inCart = !productToChange.inCart;
+   return mutable;
   });
  };
 
  const listDone = () => {
-  setState(current => {
-   return {
-    ...current,
-    current: false,
-   };
-  });
+  if (!window.confirm("Are you sure?")) return;
+  Axios.post(`${process.env.REACT_APP_BACKEND_URL}/list/finalize`)
+   .then(result => navigateTo("/"))
+   .catch(error => console.log(error));
  };
 
- if (!state) return <div>Loading...</div>;
+ if (!productsOnList) return <div>Loading...</div>;
 
- if (!state.rightColumn) {
+ if (Object.keys(productsOnList).length === 0) {
   return (
    <div className={`content-wrapper shop ${lowVisionOn ? "low-vision" : ""}`}>
     <ul>
@@ -77,53 +80,39 @@ const Shop = ({ lowVisionOn }) => {
  return (
   <div className={`content-wrapper shop ${lowVisionOn ? "low-vision" : ""}`}>
    <ul>
-    {/* <h2>
+    <h2>
      Shop
      <button
       className="btn done"
-      onClick={() => listDone()}
+      onClick={listDone}
      >
       Done
      </button>
-    </h2> */}
-    {Object.keys(state.rightColumn.products).map(category => {
-     if (state.rightColumn.products[category].length === 0) return null;
+    </h2>
+    {Object.keys(productsOnList).map(category => {
+     if (productsOnList[category].length === 0) return null;
      else
       return (
        <li key={category}>
         <button
          onClick={() =>
-          setState(current => {
+          setDropdowns(current => {
            return {
             ...current,
-            rightColumn: {
-             ...current.rightColumn,
-             dropdowns: {
-              ...current.rightColumn.dropdowns,
-              [category]: !current.rightColumn.dropdowns?.[category],
-             },
-            },
+            [category]: !current[category],
            };
           })
          }
         >
          <h3>
           {category}
-          <i
-           className={`arrow ${
-            state.rightColumn.dropdowns?.[category] ? "up" : "down"
-           }`}
-          ></i>
+          <i className={`arrow ${dropdowns[category] ? "up" : "down"}`}></i>
          </h3>
         </button>
         <ul
-         style={
-          state.rightColumn.dropdowns?.[category]
-           ? { display: "flex" }
-           : { display: "none" }
-         }
+         style={dropdowns[category] ? { display: "flex" } : { display: "none" }}
         >
-         {state.rightColumn.products[category].map((product, index) => (
+         {productsOnList[category].map(product => (
           <li
            className={`${lowVisionOn ? "low-vision" : ""}`}
            key={product._id}
@@ -137,7 +126,7 @@ const Shop = ({ lowVisionOn }) => {
            </span>
            <button
             className={`btn ${product.inCart ? "remove" : "add"}`}
-            onClick={() => changeStatus(category, index)}
+            onClick={() => switchProductStatus(product)}
            >
             {product.inCart ? "Not in cart" : "In cart"}
            </button>

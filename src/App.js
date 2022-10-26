@@ -12,7 +12,7 @@ import EditProduct from "./Pages/EditProduct";
 import Settings from "./Pages/Settings";
 
 const App = () => {
- const [lowVisionOn, setLowVision] = useState(true);
+ const [lowVisionOn, setLowVision] = useState(false);
 
  const handleLowVisionSwitch = () => {
   const rootElement = document.getElementsByTagName("html")[0];
