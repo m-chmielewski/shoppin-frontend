@@ -1,0 +1,42 @@
+.add-product {
+ display: flex;
+ gap: 0.5rem;
+ flex-direction: column;
+}
+
+.dropdown-wrapper {
+ display: flex;
+ flex-direction: column;
+ background-color: #151535;
+}
+
+.add-product .category-dropdown {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ padding: 0.25rem;
+ background-color: #151535;
+ border-bottom: 1px solid rgba(253, 253, 253, 0.3);
+}
+
+.category-dropdown span {
+ opacity: 0.4;
+}
+
+.dropdown-list {
+ display: flex;
+ flex-direction: column;
+}
+
+.dropdown-list button {
+ padding: 0.15rem 0.5rem;
+ border-bottom: 1px solid rgba(253, 253, 253, 0.25);
+}
+
+.dropdown-list button:last-child {
+ border-bottom: none;
+}
+
+.dropdown-list button.picked {
+ background-color: #353d2f;
+}

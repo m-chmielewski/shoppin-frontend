@@ -6,6 +6,9 @@ import "./Shared.css";
 import Home from "./Pages/Home";
 import Compose from "./Pages/Compose";
 import Shop from "./Pages/Shop";
+import ManageProducts from "./Pages/ManageProducts";
+import AddProduct from "./Pages/AddProduct";
+import EditProduct from "./Pages/EditProduct";
 import Settings from "./Pages/Settings";
 
 const App = () => {
@@ -40,6 +43,21 @@ const App = () => {
       exact
       path="/shop/"
       element={<Shop lowVisionOn={lowVisionOn} />}
+     />
+     <Route
+      exact
+      path="/manageProducts/"
+      element={<ManageProducts lowVisionOn={lowVisionOn} />}
+     />
+     <Route
+      exact
+      path="/manageProducts/add/"
+      element={<AddProduct lowVisionOn={lowVisionOn} />}
+     />
+     <Route
+      exact
+      path="/manageProducts/edit/"
+      element={<EditProduct lowVisionOn={lowVisionOn} />}
      />
      <Route
       exact

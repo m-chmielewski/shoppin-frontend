@@ -76,7 +76,6 @@ const Shop = ({ lowVisionOn }) => {
 
  return (
   <div className={`content-wrapper shop ${lowVisionOn ? "low-vision" : ""}`}>
-   {" "}
    <ul>
     {/* <h2>
      Shop

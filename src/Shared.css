@@ -62,6 +62,12 @@ button {
  padding: 0.25rem;
  border-radius: 0.25rem;
  text-align: center;
+ border: 2px solid transparent;
+}
+
+.btn.done,
+.btn.submit {
+ background-color: #32327d;
 }
 
 .btn.add,
@@ -74,14 +80,27 @@ button {
  background-color: #bb2901;
 }
 
+.btn.inactive {
+ pointer-events: none;
+ opacity: 0.5;
+}
+
 input {
  all: unset;
+ padding: 0.25rem;
+ background-color: #151535;
+}
+
+input::placeholder {
+ color: inherit;
+ opacity: 0.4;
 }
 
 /* Keyboard-only users accessibility */
-/* button:focus {
-  outline: orange 5px auto;
-} */
+button:focus,
+input:focus {
+ outline: orange 1px auto;
+}
 
 .page-content {
  margin: 0 20vw;
@@ -126,6 +145,36 @@ a.card {
 
 .arrow.right {
  transform: translateX(calc(-0.207106781185 * 0.4rem)) rotate(-45deg);
+}
+
+.form-alert {
+ padding: 0.25rem;
+ border-radius: 0.25rem;
+ text-align: center;
+}
+
+.form-alert.failure {
+ border: 2px solid red;
+}
+
+.form-alert.success {
+ border: 2px solid green;
+}
+
+.content-wrapper.menu {
+ display: flex;
+ flex-direction: column;
+ gap: 0.5rem;
+ list-style: none;
+}
+
+.content-wrapper.menu button {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ padding: 0.5rem;
+ border-radius: 0.5rem;
+ background-color: #151535;
 }
 
 @media (max-width: 1179px) {

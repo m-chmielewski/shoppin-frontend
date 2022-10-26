@@ -2,9 +2,25 @@ In newList plus sign is to the left relative to dropdown arrows:
   - this plus sign is also made of too thick lines?
   - There is some kind of margin between box edge and first letter in h elements
 
-+ button logic in composition page
+composition
+  + button
+
+Add product
+  Support for custom category
+  Layout for different screen sizes
+  When new product is added it is not visible in compose screen before closing opened list
+
+Shop
+  Make alert appear once Done is clcked
+  Doesnt show "no items added yet" once items are added and then all removed from list
+
+Authentication
+
+Logging
 
 Scroll bar styling
+
+Create dev branch
 
 Error handling - in backend as well: https://university.mongodb.com/mercury/M220JS/2022_October_11/chapter/Chapter_1_Driver_Setup/lesson/5a9427648b0beebeb69579cc/lecture
 
@@ -12,14 +28,6 @@ Refactor css - there is a lot that should be moved to shared.css
 
 Get rid of <i> it is not correctly used
 
-No margins for mobile
-
-Make alert appear once Done is clcked
-
-Safaris 300% font size is not enough
-
-With large font size UI goes wild
-
 Introduce error boundaries
 
-Chrome mobile fucks up 100vh
+Chrome mobile 100vh issue

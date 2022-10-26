@@ -1,20 +1,26 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
 
-import "./Compose.css";
-
 import Alert from "../Components/Alert";
+
+import "./Compose.css";
 
 const Compose = ({ lowVisionOn }) => {
  const [state, setState] = useState();
 
+ const [dropdowns, setDropdowns] = useState(); // products and list
+
  useEffect(() => {
-  Axios.get(`${process.env.REACT_APP_BACKEND_URL}/list/`).then(response => {
-   setState(current => ({
-    ...current,
-    ...response.data,
-   }));
-  });
+  Axios.get(`${process.env.REACT_APP_BACKEND_URL}/list/`)
+   .then(response => {
+    setState(current => ({
+     ...current,
+     ...response.data,
+    }));
+   })
+   .catch(error => {
+    console.log(error);
+   });
  }, []);
 
  useEffect(() => {
@@ -66,6 +72,12 @@ const Compose = ({ lowVisionOn }) => {
     }
    />
   );
+
+ let categories;
+
+ let products = { category: [] };
+
+ let list = { cagegory: [] };
 
  return (
   <div className={`content-wrapper compose ${lowVisionOn ? "low-vision" : ""}`}>
