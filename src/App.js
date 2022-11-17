@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import "./Shared.css";
 
 import Home from "./Pages/Home";
+import SignIn from "./Pages/SignIn";
 import Compose from "./Pages/Compose";
 import Shop from "./Pages/Shop";
 import ManageProducts from "./Pages/ManageProducts";
@@ -12,17 +13,29 @@ import EditProduct from "./Pages/EditProduct";
 import Settings from "./Pages/Settings";
 
 const App = () => {
- const [lowVisionOn, setLowVision] = useState(false);
+ const [lowVisionOn, setLowVision] = useState(true);
+ const [token, setToken] = useState(localStorage.getItem("token"));
+
+ const saveToken = token => {
+  localStorage.setItem("token", token);
+  setToken(token);
+ };
 
  const handleLowVisionSwitch = () => {
   const rootElement = document.getElementsByTagName("html")[0];
-  setLowVision(isOn => {
-   isOn
-    ? (rootElement.style.fontSize = "12pt")
-    : (rootElement.style.fontSize = "42pt");
-   return !isOn;
-  });
+  lowVisionOn
+   ? (rootElement.style.fontSize = "12pt")
+   : (rootElement.style.fontSize = "42pt");
+  setLowVision(!lowVisionOn);
  };
+
+ if (!token)
+  return (
+   <SignIn
+    setToken={saveToken}
+    lowVisionOn={lowVisionOn}
+   />
+  );
 
  return (
   <>
@@ -30,37 +43,34 @@ const App = () => {
    <Router>
     <Routes>
      <Route
-      exact
       path="/"
       element={<Home lowVisionOn={lowVisionOn} />}
      />
      <Route
-      exact
+      path="/signIn/"
+      element={<SignIn lowVisionOn={lowVisionOn} />}
+     />
+     <Route
       path="/compose/"
       element={<Compose lowVisionOn={lowVisionOn} />}
      />
      <Route
-      exact
       path="/shop/"
       element={<Shop lowVisionOn={lowVisionOn} />}
      />
      <Route
-      exact
       path="/manageProducts/"
       element={<ManageProducts lowVisionOn={lowVisionOn} />}
      />
      <Route
-      exact
       path="/manageProducts/add/"
       element={<AddProduct lowVisionOn={lowVisionOn} />}
      />
      <Route
-      exact
       path="/manageProducts/edit/"
       element={<EditProduct lowVisionOn={lowVisionOn} />}
      />
      <Route
-      exact
       path="/settings/"
       element={
        <Settings

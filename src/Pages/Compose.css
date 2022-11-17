@@ -8,6 +8,42 @@
  gap: 1rem;
 }
 
+.compose > .toolbar {
+ display: flex;
+ flex-direction: column;
+}
+
+.compose > .toolbar > .top-section {
+ display: flex;
+ justify-content: space-between;
+ border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.compose .hamburger-btn {
+ display: flex;
+ align-items: center;
+}
+
+.compose .hamburger-btn img {
+ pointer-events: none;
+}
+
+.compose > .toolbar > ul {
+ display: flex;
+ flex-direction: column;
+}
+
+.compose > .toolbar > ul > li {
+ display: flex;
+ flex-direction: column;
+ padding: 0.25rem 0;
+ border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.compose > .toolbar > ul button {
+ text-align: center;
+}
+
 .compose > ul {
  display: flex;
  flex-direction: column;
@@ -32,6 +68,7 @@
  display: flex;
  justify-content: space-between;
  align-items: center;
+ padding: 0 0.2rem;
 }
 
 .compose > ul > li > ul {

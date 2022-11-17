@@ -1,21 +1,24 @@
-In newList plus sign is to the left relative to dropdown arrows:
-  - this plus sign is also made of too thick lines?
-  - There is some kind of margin between box edge and first letter in h elements
-
 compose
-  + button
+  "add product" button
 
 Add product
   Support for custom category
   Layout for different screen sizes
-  When new product is added it is not visible in compose screen before closing opened list
 
 Shop
-  Make alert appear once Done is clcked
-  Doesnt show "no items added yet" once items are added and then all removed from list
   Cross out categories from which all items are in cart
+  Compose list works only when text is clicked
+  Add toolbar
 
 Authentication
+
+Search bar
+
+Navigation
+
+Save dropdowns data in localStorage
+
+Get rid of all: unset
 
 Logging
 

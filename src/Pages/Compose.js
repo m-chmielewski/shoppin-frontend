@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
 
+import hamburgerIcon from "../Icons/hamburger.svg";
+import closeIcon from "../Icons/close.svg";
+
 import "./Compose.css";
 
 const Compose = ({ lowVisionOn }) => {
  const [products, setProducts] = useState();
  const [productsToAdd, setProductsToAdd] = useState();
  const [productsOnList, setProductsOnList] = useState();
- const [dropdowns, setDropdowns] = useState({ toAdd: {}, onList: {} }); // products and list
+ const [dropdowns, setDropdowns] = useState({ toAdd: {}, onList: {} });
+ const [menuOpened, setMenuOpened] = useState(false);
 
  useEffect(() => {
   Axios.get(`${process.env.REACT_APP_BACKEND_URL}/list/`)
@@ -47,6 +51,31 @@ const Compose = ({ lowVisionOn }) => {
   }
  }, [products]);
 
+ const handleCollapseExpandAll = expandOrCollapse => {
+  let expand;
+
+  switch (expandOrCollapse) {
+   case "expand":
+    expand = true;
+    break;
+   case "collapse":
+    expand = false;
+    break;
+   default:
+    expand = false;
+  }
+
+  setDropdowns(() => {
+   const categories = [...new Set(products.map(product => product.category))];
+   const newValues = { onList: {}, toAdd: {} };
+   categories.forEach(category => {
+    newValues.onList[category] = expand;
+    newValues.toAdd[category] = expand;
+   });
+   return newValues;
+  });
+ };
+
  const switchProductStatus = product => {
   setProducts(current => {
    const mutable = [...current];
@@ -65,7 +94,37 @@ const Compose = ({ lowVisionOn }) => {
 
  return (
   <div className={`content-wrapper compose ${lowVisionOn ? "low-vision" : ""}`}>
-   {/* <button>Expand/collapse all categpries</button> */}
+   <div className="toolbar">
+    <div className="top-section">
+     <button>Back</button>
+     <button
+      className="hamburger-btn"
+      onClick={() => {
+       setMenuOpened(current => !current);
+      }}
+     >
+      <img
+       src={menuOpened ? closeIcon : hamburgerIcon}
+       alt="Menu icon"
+      ></img>
+     </button>
+    </div>
+    <ul style={{ display: menuOpened ? "flex" : "none" }}>
+     <li>
+      <button>Search</button>
+     </li>
+     <li>
+      <button onClick={() => handleCollapseExpandAll("expand")}>
+       Expand all
+      </button>
+     </li>
+     <li>
+      <button onClick={() => handleCollapseExpandAll("collapse")}>
+       Collapse all
+      </button>
+     </li>
+    </ul>
+   </div>
    <ul>
     <h2>Products</h2>
     {Object.keys(productsToAdd).map(category => {

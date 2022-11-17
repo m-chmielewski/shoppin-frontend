@@ -33,7 +33,7 @@ html {
  font-family: "Montserrat";
  font-weight: 100;
  margin: 0;
- font-size: 12pt;
+ font-size: 42pt;
  min-height: 100vh;
  position: relative;
 }
@@ -94,6 +94,13 @@ input {
 input::placeholder {
  color: inherit;
  opacity: 0.4;
+}
+
+fieldset {
+ display: flex;
+ flex-direction: column;
+ gap: 0.5rem;
+ border: none;
 }
 
 /* Keyboard-only users accessibility */
