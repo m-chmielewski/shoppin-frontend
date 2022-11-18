@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 
-import "./Shop.css";
-
 import { Button, Card, CategoryWrapper, PageContent } from "@mchm/common";
 
 const Shop = () => {
