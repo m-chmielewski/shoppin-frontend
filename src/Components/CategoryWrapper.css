@@ -1,0 +1,10 @@
+.category-wrapper {
+ padding: 0 0.2rem;
+}
+
+.category-wrapper .heading {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ cursor: pointer;
+}

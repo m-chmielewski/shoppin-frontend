@@ -4,10 +4,11 @@ import Axios from "axios";
 
 import "./Shop.css";
 
-const Shop = ({ lowVisionOn }) => {
+import { Button, Card, CategoryWrapper, PageContent } from "@mchm/common";
+
+const Shop = () => {
  const [products, setProducts] = useState();
  const [productsOnList, setProductsOnList] = useState();
- const [dropdowns, setDropdowns] = useState({});
 
  const navigateTo = useNavigate();
 
@@ -61,83 +62,58 @@ const Shop = ({ lowVisionOn }) => {
 
  if (Object.keys(productsOnList).length === 0) {
   return (
-   <div className={`content-wrapper shop ${lowVisionOn ? "low-vision" : ""}`}>
-    <ul>
-     <h2>Shop</h2>
-     <li>
-      <h3>No items added yet</h3>
-      <ul>
-       <li>
-        <button onClick={() => navigateTo("/compose")}>Compose list</button>
-       </li>
-      </ul>
-     </li>
-    </ul>
-   </div>
+   <PageContent>
+    <h1>Shop</h1>
+    No items added yet
+    <Button href="/compose">Compose list</Button>
+   </PageContent>
   );
  }
 
  return (
-  <div className={`content-wrapper shop ${lowVisionOn ? "low-vision" : ""}`}>
+  <PageContent>
+   <h1>Shop</h1>
+   <Button
+    onClick={listDone}
+    variant="neutral"
+   >
+    Done
+   </Button>
    <ul>
-    <h2>
-     Shop
-     <button
-      className="btn done"
-      onClick={listDone}
-     >
-      Done
-     </button>
-    </h2>
     {Object.keys(productsOnList).map(category => {
-     if (productsOnList[category].length === 0) return null;
-     else
+     if (productsOnList[category].length === 0) {
+      return null;
+     } else {
       return (
-       <li key={category}>
-        <button
-         onClick={() =>
-          setDropdowns(current => {
-           return {
-            ...current,
-            [category]: !current[category],
-           };
-          })
-         }
-        >
-         <h3>
-          {category}
-          <i className={`arrow ${dropdowns[category] ? "up" : "down"}`}></i>
-         </h3>
-        </button>
-        <ul
-         style={dropdowns[category] ? { display: "flex" } : { display: "none" }}
-        >
-         {productsOnList[category].map(product => (
-          <li
-           className={`${lowVisionOn ? "low-vision" : ""}`}
-           key={product._id}
-          >
+       <CategoryWrapper
+        key={category}
+        category={category}
+       >
+        {productsOnList[category].map(item => (
+         <li key={item._id}>
+          <Card>
            <span
             style={{
-             textDecorationLine: product.inCart ? "line-through" : "none",
+             textDecorationLine: item.inCart ? "line-through" : "none",
             }}
            >
-            {product.name}
+            {item.name}
            </span>
-           <button
-            className={`btn ${product.inCart ? "remove" : "add"}`}
-            onClick={() => switchProductStatus(product)}
+           <Button
+            variant={`${item.inCart ? "negative" : "positive"}`}
+            onClick={() => switchProductStatus(item)}
            >
-            {product.inCart ? "Not in cart" : "In cart"}
-           </button>
-          </li>
-         ))}
-        </ul>
-       </li>
+            {item.inCart ? "Not in cart" : "In cart"}
+           </Button>
+          </Card>
+         </li>
+        ))}
+       </CategoryWrapper>
       );
+     }
     })}
    </ul>
-  </div>
+  </PageContent>
  );
 };
 
