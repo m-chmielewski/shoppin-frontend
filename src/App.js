@@ -1,19 +1,18 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import "./Shared.css";
+import { useRegularVision } from "@mchm/common";
+import { StylingProvider } from "@mchm/common";
 
 import Home from "./Pages/Home";
 import SignIn from "./Pages/SignIn";
 import Compose from "./Pages/Compose";
 import Shop from "./Pages/Shop";
-import ManageProducts from "./Pages/ManageProducts";
 import AddProduct from "./Pages/AddProduct";
-import EditProduct from "./Pages/EditProduct";
 import Settings from "./Pages/Settings";
 
 const App = () => {
- const [lowVisionOn, setLowVision] = useState(true);
+ const [regularVisionOn, regularVisionSwitch] = useRegularVision();
  const [token, setToken] = useState(localStorage.getItem("token"));
 
  const saveToken = token => {
@@ -21,67 +20,51 @@ const App = () => {
   setToken(token);
  };
 
- const handleLowVisionSwitch = () => {
-  const rootElement = document.getElementsByTagName("html")[0];
-  lowVisionOn
-   ? (rootElement.style.fontSize = "12pt")
-   : (rootElement.style.fontSize = "42pt");
-  setLowVision(!lowVisionOn);
- };
-
- if (!token)
-  return (
-   <SignIn
-    setToken={saveToken}
-    lowVisionOn={lowVisionOn}
-   />
-  );
+ // if (!token)
+ //  return (
+ //   <SignIn
+ //    setToken={saveToken}
+ //    lowVisionOn={lowVisionOn}
+ //   />
+ //  );
 
  return (
-  <>
+  <StylingProvider regularVisionOn={regularVisionOn}>
    {/* <nav>Menu</nav> */}
    <Router>
     <Routes>
      <Route
       path="/"
-      element={<Home lowVisionOn={lowVisionOn} />}
+      element={<Home />}
      />
      <Route
       path="/signIn/"
-      element={<SignIn lowVisionOn={lowVisionOn} />}
+      element={<SignIn />}
      />
      <Route
       path="/compose/"
-      element={<Compose lowVisionOn={lowVisionOn} />}
+      element={<Compose />}
      />
      <Route
       path="/shop/"
-      element={<Shop lowVisionOn={lowVisionOn} />}
+      element={<Shop />}
      />
      <Route
-      path="/manageProducts/"
-      element={<ManageProducts lowVisionOn={lowVisionOn} />}
-     />
-     <Route
-      path="/manageProducts/add/"
-      element={<AddProduct lowVisionOn={lowVisionOn} />}
-     />
-     <Route
-      path="/manageProducts/edit/"
-      element={<EditProduct lowVisionOn={lowVisionOn} />}
+      path="/addProduct/"
+      element={<AddProduct />}
      />
      <Route
       path="/settings/"
       element={
        <Settings
-        lowVisionOn={lowVisionOn}
-        lowVisionCallback={() => handleLowVisionSwitch()}
+        regularVisionSwitch={regularVisionSwitch}
+        regularVisionOn={regularVisionOn}
        />
       }
      />
     </Routes>
    </Router>
-  </>
+  </StylingProvider>
  );
 };
 

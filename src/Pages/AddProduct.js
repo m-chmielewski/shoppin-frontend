@@ -1,160 +1,103 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 
-import "./AddProduct.css";
+import {
+ Card,
+ PageContent,
+ SubmitSection,
+ SuggestiveInput,
+} from "@mchm/common";
 
-const AddProduct = ({ lowVisionOn }) => {
- const [state, setState] = useState();
+import { useFormData, useFormState } from "@mchm/common";
+import { validationCriteria } from "@mchm/common";
 
- const navigateTo = useNavigate();
+const randomIdPrefix = Date.now().toString(); //To stop browsers from making input suggestions
+
+const AddProduct = () => {
+ const { formData, handleSimpleInputChange, revertToInitialState } =
+  useFormData({
+   name: "",
+   category: "",
+  });
+
+ const formValidationCriteria = {
+  name: validationCriteria.REQUIRED,
+  category: validationCriteria.REQUIRED,
+ };
+
+ const [formState, handleSubmit, dropdownsHandle] = useFormState(
+  formData,
+  `${process.env.REACT_APP_BACKEND_URL}/products`,
+  formValidationCriteria,
+  revertToInitialState
+ );
+
+ const [categoriesList, setCategoriesList] = useState();
 
  useEffect(() => {
   Axios.get(`${process.env.REACT_APP_BACKEND_URL}/categories/`)
-   .then(response => {
-    setState(current => ({
-     ...current,
-     categories: response.data,
-    }));
-   })
+   .then(response => setCategoriesList(response.data))
    .catch(error => {
     console.log(error);
    });
- }, []);
 
- const handleSubmit = () => {
-  setState(current => {
-   return {
-    ...current,
-    submitting: true,
-    valuesMissing: !state?.name || !state?.pickedCategory ? true : false,
-   };
+  const html = document.getElementsByTagName("html")[0];
+
+  html.addEventListener("keydown", event => {
+   if (
+    event.key === "Enter" &&
+    event.target.type !== "submit" &&
+    event.target.type !== "textarea"
+   ) {
+    event.preventDefault();
+
+    event.target.click();
+   }
   });
 
-  if (state?.name && state?.pickedCategory) {
-   Axios.post(`${process.env.REACT_APP_BACKEND_URL}/products/`, {
-    name: state.name,
-    category: state.pickedCategory,
-   }).then(result => {
-    if (result.status === 200) {
-     setState(current => {
-      return {
-       ...current,
-       submittedSuccessfully: true,
-      };
-     });
+  html.addEventListener("click", event => {
+   if (!event.target.id.startsWith(`${randomIdPrefix}-category`)) {
+    dropdownsHandle(false);
+   }
+  });
+ }, [dropdownsHandle]);
 
-     setTimeout(() => {
-      setState(current => {
-       return {
-        ...current,
-        submitting: false,
-        submittedSuccessfully: null,
-        name: "",
-       };
-      });
-     }, 2000);
-    }
-   });
-  } else {
-   setTimeout(() => {
-    setState(current => {
-     return {
-      ...current,
-      submitting: false,
-      valuesMissing: false,
-      submittedSuccessfully: null,
-     };
-    });
-   }, 2000);
-  }
- };
+ if (!categoriesList) return <div>Loading...</div>;
 
  return (
-  <div
-   className={`content-wrapper add-product ${lowVisionOn ? "low-vision" : ""}`}
-  >
-   <input
-    type="text"
-    placeholder="Name"
-    value={state?.name ?? ""}
-    onChange={event =>
-     setState(current => {
-      return {
-       ...current,
-       name: event.target.value,
-      };
-     })
-    }
-   />
-   <div className="dropdown-wrapper">
-    <button
-     className="category-dropdown"
-     style={state?.dropdownDropped ? {} : { borderBottom: "none" }}
-     onClick={() =>
-      setState(current => {
-       return {
-        ...current,
-        dropdownDropped: !current?.dropdownDropped,
-       };
-      })
-     }
-    >
-     <span style={{ opacity: state?.pickedCategory ? "1" : ".3" }}>
-      {state?.pickedCategory ? state.pickedCategory : "Category"}
-     </span>
-     <div className="arrow down"></div>
-    </button>
-    <div
-     className="dropdown-list"
-     style={{ display: state?.dropdownDropped ? "flex" : "none" }}
-    >
-     {state?.categories.map(category => {
-      return (
-       <button
-        className={state?.pickedCategory === category ? "picked" : ""}
-        key={category}
-        onClick={() =>
-         setState(current => {
-          return {
-           ...current,
-           pickedCategory: category,
-           dropdownDropped: false,
-          };
-         })
-        }
-       >
-        {category}
-       </button>
-      );
-     })}
-    </div>
-   </div>
-   <div
-    className={`form-alert ${state?.submittedSuccessfully ? "success" : ""} ${
-     state?.valuesMissing ? "failure" : ""
-    }`}
-    style={{
-     display:
-      state?.valuesMissing || state?.submittedSuccessfully ? "block" : "none",
-    }}
-   >
-    {state?.valuesMissing ? "Missing values" : null}
-    {state?.submittedSuccessfully ? "Success" : null}
-   </div>
-   <button
-    className={`submit-btn btn submit ${state?.submitting ? "inactive" : ""}`}
-    onClick={() => handleSubmit()}
-   >
-    {state?.submitting && !state?.valuesMissing ? "Submitting..." : "Submit"}
-   </button>
-   <button
-    className={`btn remove ${state?.submitting ? "inactive" : ""}`}
-    onClick={() => navigateTo("/manageProducts/")}
-   >
-    Cancel
-   </button>
-  </div>
+  <PageContent>
+   <h1>Add product</h1>
+   <form onSubmit={event => handleSubmit(event)}>
+    <fieldset>
+     <legend style={{ display: "none" }}>Add product</legend>
+     <Card>
+      <label htmlFor={`${randomIdPrefix}-name`}>Product name</label>
+      <input
+       id={`${randomIdPrefix}-name`}
+       type="text"
+       value={formData.name}
+       onChange={event => {
+        handleSimpleInputChange("name", event.target.value);
+       }}
+       placeholder="Name"
+      />
+      <SuggestiveInput
+       id={`${randomIdPrefix}-category`}
+       value={formData.category}
+       placeholder="Category"
+       label="Category"
+       options={categoriesList}
+       dataNature="simple"
+       fieldName="category"
+       onInputChange={handleSimpleInputChange}
+       dropdownsHandle={dropdownsHandle}
+       listDown={formState.dropdowns[0]}
+      />
+     </Card>
+    </fieldset>
+    <SubmitSection formState={formState} />
+   </form>
+  </PageContent>
  );
 };
 

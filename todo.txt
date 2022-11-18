@@ -4,6 +4,7 @@ compose
 Add product
   Support for custom category
   Layout for different screen sizes
+  Maybe I should allow to add more rows instead of adding one by one
 
 Shop
   Cross out categories from which all items are in cart
