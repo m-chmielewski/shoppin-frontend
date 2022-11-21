@@ -94,7 +94,7 @@ const Compose = ({ lowVisionOn }) => {
 
  return (
   <div className={`content-wrapper compose ${lowVisionOn ? "low-vision" : ""}`}>
-   <div className="toolbar">
+   {/* <div className="toolbar">
     <div className="top-section">
      <button>Back</button>
      <button
@@ -124,7 +124,7 @@ const Compose = ({ lowVisionOn }) => {
       </button>
      </li>
     </ul>
-   </div>
+   </div> */}
    <ul>
     <h2>Products</h2>
     {Object.keys(productsToAdd).map(category => {

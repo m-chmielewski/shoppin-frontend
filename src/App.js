@@ -29,13 +29,13 @@ const App = () => {
   setLowVision(!lowVisionOn);
  };
 
- if (!token)
-  return (
-   <SignIn
-    setToken={saveToken}
-    lowVisionOn={lowVisionOn}
-   />
-  );
+ // if (!token)
+ //  return (
+ //   <SignIn
+ //    setToken={saveToken}
+ //    lowVisionOn={lowVisionOn}
+ //   />
+ //  );
 
  return (
   <>
