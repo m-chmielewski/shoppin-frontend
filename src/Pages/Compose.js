@@ -4,9 +4,11 @@ import Axios from "axios";
 import hamburgerIcon from "../Icons/hamburger.svg";
 import closeIcon from "../Icons/close.svg";
 
+import { Button, Card, CategoryWrapper, PageContent } from "@mchm/common";
+
 import "./Compose.css";
 
-const Compose = ({ lowVisionOn }) => {
+const Compose = () => {
  const [products, setProducts] = useState();
  const [productsToAdd, setProductsToAdd] = useState();
  const [productsOnList, setProductsOnList] = useState();
@@ -93,8 +95,9 @@ const Compose = ({ lowVisionOn }) => {
  }
 
  return (
-  <div className={`content-wrapper compose ${lowVisionOn ? "low-vision" : ""}`}>
-   <div className="toolbar">
+  <PageContent>
+   <h1>Compose</h1>
+   {/* <div className="toolbar">
     <div className="top-section">
      <button>Back</button>
      <button
@@ -124,112 +127,70 @@ const Compose = ({ lowVisionOn }) => {
       </button>
      </li>
     </ul>
-   </div>
-   <ul>
-    <h2>Products</h2>
-    {Object.keys(productsToAdd).map(category => {
-     if (productsToAdd[category].length === 0) return null;
-     else
-      return (
-       <li key={category}>
-        <button
-         onClick={() =>
-          setDropdowns(current => {
-           return {
-            ...current,
-            toAdd: {
-             ...current.toAdd,
-             [category]: !current.toAdd[category],
-            },
-           };
-          })
-         }
-        >
-         <h3>
-          {category}
-          <i
-           className={`arrow ${dropdowns.toAdd[category] ? "up" : "down"}`}
-          ></i>
-         </h3>
-        </button>
-        <ul
-         style={
-          dropdowns.toAdd[category] ? { display: "flex" } : { display: "none" }
-         }
+   </div> */}
+   <div
+    style={{
+     display: "flex",
+     gap: "var(--regular-vision-gap)",
+     flexWrap: "wrap",
+    }}
+   >
+    <ul style={{ flex: "1" }}>
+     <h2>Products</h2>
+     {Object.keys(productsToAdd).map(category => {
+      if (productsToAdd[category].length === 0) return null;
+      else
+       return (
+        <CategoryWrapper
+         key={category}
+         category={category}
         >
          {productsToAdd[category].map(product => (
-          <li
-           className={lowVisionOn ? "low-vision" : ""}
-           key={product._id}
-          >
-           <div>{product.name}</div>
-           <button
-            className="btn add"
-            onClick={() => switchProductStatus(product)}
-           >
-            Add
-           </button>
+          <li key={product._id}>
+           <Card>
+            <span>{product.name}</span>
+            <Button
+             variant="positive"
+             onClick={() => switchProductStatus(product)}
+            >
+             Add
+            </Button>
+           </Card>
           </li>
          ))}
-        </ul>
-       </li>
-      );
-    })}
-   </ul>
-   <ul>
-    <h2>List</h2>
-    {Object.keys(productsOnList).map(category => {
-     if (productsOnList[category].length === 0) return null;
-     else
-      return (
-       <li key={category}>
-        <button
-         onClick={() =>
-          setDropdowns(current => {
-           return {
-            ...current,
-            onList: {
-             ...current.onList,
-             [category]: !current.onList[category],
-            },
-           };
-          })
-         }
+        </CategoryWrapper>
+       );
+     })}
+    </ul>
+    <ul style={{ flex: "1" }}>
+     <h2>List</h2>
+     {Object.keys(productsOnList).map(category => {
+      if (productsOnList[category].length === 0) return null;
+      else
+       return (
+        <CategoryWrapper
+         key={category}
+         category={category}
         >
-         <h3>
-          {category}
-          <i
-           className={`arrow ${dropdowns?.onList?.[category] ? "up" : "down"}`}
-          ></i>
-         </h3>
-        </button>
-        <ul
-         style={
-          dropdowns?.onList?.[category]
-           ? { display: "flex" }
-           : { display: "none" }
-         }
-        >
-         {productsOnList[category].map((product, index) => (
-          <li
-           className={lowVisionOn ? "low-vision" : ""}
-           key={product._id}
-          >
-           {product.name}
-           <button
-            className="btn remove"
-            onClick={() => switchProductStatus(product)}
-           >
-            Remove
-           </button>
+         {productsOnList[category].map(product => (
+          <li key={product._id}>
+           <Card>
+            <span>{product.name}</span>
+            <Button
+             variant="negative"
+             onClick={() => switchProductStatus(product)}
+            >
+             Remove
+            </Button>
+           </Card>
           </li>
          ))}
-        </ul>
-       </li>
-      );
-    })}
-   </ul>
-  </div>
+        </CategoryWrapper>
+       );
+     })}
+    </ul>
+   </div>
+  </PageContent>
  );
 };
 

@@ -87,21 +87,21 @@ const Shop = () => {
         key={category}
         category={category}
        >
-        {productsOnList[category].map(item => (
-         <li key={item._id}>
+        {productsOnList[category].map(product => (
+         <li key={product._id}>
           <Card>
            <span
             style={{
-             textDecorationLine: item.inCart ? "line-through" : "none",
+             textDecorationLine: product.inCart ? "line-through" : "none",
             }}
            >
-            {item.name}
+            {product.name}
            </span>
            <Button
-            variant={`${item.inCart ? "negative" : "positive"}`}
-            onClick={() => switchProductStatus(item)}
+            variant={`${product.inCart ? "negative" : "positive"}`}
+            onClick={() => switchProductStatus(product)}
            >
-            {item.inCart ? "Not in cart" : "In cart"}
+            {product.inCart ? "Not in cart" : "In cart"}
            </Button>
           </Card>
          </li>
