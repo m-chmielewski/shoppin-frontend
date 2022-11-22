@@ -1,9 +1,12 @@
 compose
   "add product" button
+  - regular-vision-gap is hardcoded
 
 Add product
   Support for custom category
   Layout for different screen sizes
+  Maybe I should allow to add more rows instead of adding one by one
+  Make name field suggestiveInput - this will let check if product is already in db
 
 Shop
   Cross out categories from which all items are in cart
@@ -18,8 +21,6 @@ Navigation
 
 Save dropdowns data in localStorage
 
-Get rid of all: unset
-
 Logging
 
 Scroll bar styling
@@ -31,8 +32,6 @@ Cache low vision
 Error handling - in backend as well: https://university.mongodb.com/mercury/M220JS/2022_October_11/chapter/Chapter_1_Driver_Setup/lesson/5a9427648b0beebeb69579cc/lecture
 
 Refactor css - there is a lot that should be moved to shared.css
-
-Get rid of <i> it is not correctly used
 
 Introduce error boundaries
 

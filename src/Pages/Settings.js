@@ -1,22 +1,21 @@
 import React from "react";
 
-import "./Settings.css";
+import { PageContent, Card, Button } from "@mchm/common";
 
-const Settings = ({ lowVisionCallback, lowVisionOn }) => {
+const Settings = ({ regularVisionSwitch, regularVisionOn }) => {
  return (
-  <div
-   className={`content-wrapper settings ${lowVisionOn ? "low-vision" : ""}`}
-  >
-   <div className={`card ${lowVisionOn ? "low-vision" : ""}`}>
+  <PageContent>
+   <h1>Settings</h1>
+   <Card>
     <span>Low vision mode</span>
-    <button
-     className={`btn ${lowVisionOn ? "off" : "on"}`}
-     onClick={() => lowVisionCallback()}
+    <Button
+     variant={`${regularVisionOn ? "positive" : "negative"}`}
+     onClick={() => regularVisionSwitch()}
     >
-     Turn {lowVisionOn ? "off" : "on"}
-    </button>
-   </div>
-  </div>
+     Turn {regularVisionOn ? "on" : "off"}
+    </Button>
+   </Card>
+  </PageContent>
  );
 };
 

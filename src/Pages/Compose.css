@@ -1,11 +1,27 @@
-.compose {
+.compose .columns-wrapper {
  display: flex;
- gap: 2rem;
+ gap: var(--standard-gap);
 }
 
-.compose.low-vision {
- flex-direction: column;
- gap: 1rem;
+.regular-vision .compose .columns-wrapper {
+ flex-direction: row;
+ gap: var(--regular-vision-gap);
+}
+
+.compose .columns-wrapper > ul {
+ flex: 1;
+}
+
+@media (max-width: 400px) {
+ .compose .columns-wrapper {
+  flex-direction: column;
+ }
+}
+
+@media (min-width: 401px) {
+ .compose .columns-wrapper {
+  flex-direction: row;
+ }
 }
 
 .compose > .toolbar {
@@ -42,82 +58,4 @@
 
 .compose > .toolbar > ul button {
  text-align: center;
-}
-
-.compose > ul {
- display: flex;
- flex-direction: column;
- gap: 0.5rem;
- flex: 1;
- border-radius: 0.5rem;
- list-style: none;
-}
-
-.compose h2 {
- display: flex;
- justify-content: space-between;
-}
-
-.compose > ul > li {
- display: flex;
- flex-direction: column;
- gap: 0.5rem;
-}
-
-.compose h3 {
- display: flex;
- justify-content: space-between;
- align-items: center;
- padding: 0 0.2rem;
-}
-
-.compose > ul > li > ul {
- display: flex;
- flex-direction: column;
- gap: 0.5rem;
-}
-
-.compose > ul > li > ul > li {
- display: flex;
- justify-content: space-between;
- align-items: center;
- gap: 0.25rem;
- background-color: #151535;
- padding: 0.5rem;
- border-radius: 0.5rem;
-}
-
-.compose > ul > li > ul > li.low-vision {
- flex-direction: column;
- justify-content: flex-start;
- align-items: initial;
-}
-
-@media (max-width: 400px) {
- .compose {
-  width: auto;
-  margin: 2rem 1rem;
-  gap: 1rem;
- }
-}
-
-@media (min-width: 600px) {
- .compose {
-  width: 40rem;
-  margin: 2rem auto;
- }
-}
-
-@media (min-width: 1180px) {
- .compose {
-  width: 45rem;
-  margin: 1rem auto;
- }
-
- .compose.low-vision {
-  flex-direction: row;
-  gap: 0.5rem;
-  width: auto;
-  padding: 0.5rem 0.25rem;
- }
 }
