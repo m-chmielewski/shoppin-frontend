@@ -12,7 +12,6 @@ const Compose = () => {
  const [products, setProducts] = useState();
  const [productsToAdd, setProductsToAdd] = useState();
  const [productsOnList, setProductsOnList] = useState();
- const [dropdowns, setDropdowns] = useState({ toAdd: {}, onList: {} });
  const [menuOpened, setMenuOpened] = useState(false);
 
  useEffect(() => {
@@ -66,16 +65,6 @@ const Compose = () => {
    default:
     expand = false;
   }
-
-  setDropdowns(() => {
-   const categories = [...new Set(products.map(product => product.category))];
-   const newValues = { onList: {}, toAdd: {} };
-   categories.forEach(category => {
-    newValues.onList[category] = expand;
-    newValues.toAdd[category] = expand;
-   });
-   return newValues;
-  });
  };
 
  const switchProductStatus = product => {
@@ -95,7 +84,7 @@ const Compose = () => {
  }
 
  return (
-  <PageContent>
+  <PageContent className="compose">
    <h1>Compose</h1>
    {/* <div className="toolbar">
     <div className="top-section">
@@ -128,14 +117,8 @@ const Compose = () => {
      </li>
     </ul>
    </div> */}
-   <div
-    style={{
-     display: "flex",
-     gap: "var(--regular-vision-gap)",
-     flexWrap: "wrap",
-    }}
-   >
-    <ul style={{ flex: "1" }}>
+   <div className="columns-wrapper">
+    <ul>
      <h2>Products</h2>
      {Object.keys(productsToAdd).map(category => {
       if (productsToAdd[category].length === 0) return null;
@@ -162,7 +145,7 @@ const Compose = () => {
        );
      })}
     </ul>
-    <ul style={{ flex: "1" }}>
+    <ul>
      <h2>List</h2>
      {Object.keys(productsOnList).map(category => {
       if (productsOnList[category].length === 0) return null;

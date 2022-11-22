@@ -68,7 +68,7 @@ const AddProduct = () => {
   <PageContent>
    <h1>Add product</h1>
    <form onSubmit={event => handleSubmit(event)}>
-    <fieldset>
+    <fieldset style={{ display: "flex", flexDirection: "column" }}>
      <legend style={{ display: "none" }}>Add product</legend>
      <Card>
       <label htmlFor={`${randomIdPrefix}-name`}>Product name</label>
