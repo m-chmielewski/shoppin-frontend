@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 
+import "./Shop.css";
+
 import { Button, Card, CategoryWrapper, PageContent } from "@mchm/common";
 
 const Shop = () => {
@@ -60,7 +62,7 @@ const Shop = () => {
 
  if (Object.keys(productsOnList).length === 0) {
   return (
-   <PageContent>
+   <PageContent className="shop">
     <h1>Shop</h1>
     No items added yet
     <Button href="/compose">Compose list</Button>
@@ -69,7 +71,7 @@ const Shop = () => {
  }
 
  return (
-  <PageContent>
+  <PageContent className="shop">
    <h1>Shop</h1>
    <Button
     onClick={listDone}

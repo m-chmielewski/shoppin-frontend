@@ -1,0 +1,9 @@
+.regular-vision .settings .card {
+ flex-direction: row;
+ align-items: center;
+ justify-content: space-between;
+}
+
+.regular-vision .settings .card * {
+ flex: unset;
+}

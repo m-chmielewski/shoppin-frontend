@@ -1,0 +1,9 @@
+.regular-vision .shop .card {
+ flex-direction: row;
+ align-items: center;
+ justify-content: space-between;
+}
+
+.regular-vision .shop .card * {
+ flex: unset;
+}

@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
+import "./Pages/MediaQueries.css";
+
 import { useRegularVision } from "@mchm/common";
 import { StylingProvider } from "@mchm/common";
 

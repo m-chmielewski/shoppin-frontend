@@ -1,10 +1,12 @@
 import React from "react";
 
+import "./Settings.css";
+
 import { PageContent, Card, Button } from "@mchm/common";
 
 const Settings = ({ regularVisionSwitch, regularVisionOn }) => {
  return (
-  <PageContent>
+  <PageContent className="settings">
    <h1>Settings</h1>
    <Card>
     <span>Low vision mode</span>
