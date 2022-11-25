@@ -1,3 +1,3 @@
 # Shoppin
 
-[PWA I use for facilitating household-related purchases.](https://mchm.pl)
+[🔗 PWA I use for household-related shopping.](https://mchm.pl/portfolio/shoppin)
