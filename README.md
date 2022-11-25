@@ -2,7 +2,7 @@
 
 PWA I use for facilitating household-related purchases.
 
-![Shoppin](Screenshots/shoppin.png)
+![Shoppin](screenshots/shoppin.png)
 
 ---
 
