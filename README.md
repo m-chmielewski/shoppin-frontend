@@ -1,6 +1,12 @@
-# Getting Started with Create React App
+# Shoppin
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+PWA I use for facilitating household-related purchases.
+
+![Shoppin](Screenshots/shoppin.png)
+
+---
+
+Link = [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
 
