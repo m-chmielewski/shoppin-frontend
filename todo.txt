@@ -1,3 +1,7 @@
+Now:
+  - add to list when adding product
+  - edit/remove product
+  
 compose
   "add product" button
   - regular-vision-gap is hardcoded

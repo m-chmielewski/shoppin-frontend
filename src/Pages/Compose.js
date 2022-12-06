@@ -1,179 +1,59 @@
-import React, { useState, useEffect } from "react";
-import Axios from "axios";
+import React, { useEffect, useState } from "react";
 
-import hamburgerIcon from "../Icons/hamburger.svg";
-import closeIcon from "../Icons/close.svg";
+import { visitorAlert } from "@mchm/common";
+import { PageContent, Toolbar } from "@mchm/common";
 
-import { Button, Card, CategoryWrapper, PageContent } from "@mchm/common";
-
-import "./Compose.css";
+import List from "../Components/List";
+import SearchBox from "../Components/SearchBox";
 
 const Compose = () => {
- const [products, setProducts] = useState();
- const [productsToAdd, setProductsToAdd] = useState();
- const [productsOnList, setProductsOnList] = useState();
- const [menuOpened, setMenuOpened] = useState(false);
+ const [searchPhrase, setSearchPhrase] = useState(null);
 
  useEffect(() => {
-  Axios.get(`${process.env.REACT_APP_BACKEND_URL}/list/`)
-   .then(response => {
-    setProducts(Array(...response.data));
-   })
-   .catch(error => {
-    console.log(error);
-   });
+  visitorAlert("shoppin", "compose");
  }, []);
 
- useEffect(() => {
-  if (products) {
-   Axios.post(`${process.env.REACT_APP_BACKEND_URL}/list/`, products).catch(
-    error => console.log(error)
-   );
-  }
- }, [products]);
-
- useEffect(() => {
-  if (products) {
-   const tempToAdd = {};
-   const tempOnList = {};
-   products.forEach(product => {
-    if (!product.onList) {
-     tempToAdd[product.category]
-      ? tempToAdd[product.category].push(product)
-      : (tempToAdd[product.category] = [product]);
-    } else {
-     tempOnList[product.category]
-      ? tempOnList[product.category].push(product)
-      : (tempOnList[product.category] = [product]);
-    }
-   });
-   setProductsOnList(tempOnList);
-   setProductsToAdd(tempToAdd);
-  }
- }, [products]);
-
- const handleCollapseExpandAll = expandOrCollapse => {
-  let expand;
-
-  switch (expandOrCollapse) {
-   case "expand":
-    expand = true;
-    break;
-   case "collapse":
-    expand = false;
-    break;
-   default:
-    expand = false;
-  }
- };
-
- const switchProductStatus = product => {
-  setProducts(current => {
-   const mutable = [...current];
-   const productToChange = mutable.find(
-    element => element.name === product.name
-   );
-   if (productToChange.onList) productToChange.inCart = false;
-   productToChange.onList = !productToChange.onList;
-   return mutable;
-  });
- };
-
- if (!productsToAdd || !productsOnList) {
-  return <div> Loading...</div>;
- }
+ const menuItems = [
+  {
+   name: "Search",
+   action: () => setSearchPhrase(""),
+  },
+  {
+   name: "Expand all",
+   action: () => {},
+  },
+  {
+   name: "Collapse all",
+   action: () => {},
+  },
+ ];
 
  return (
-  <PageContent className="compose">
-   <h1>Compose</h1>
-   {/* <div className="toolbar">
-    <div className="top-section">
-     <button>Back</button>
-     <button
-      className="hamburger-btn"
-      onClick={() => {
-       setMenuOpened(current => !current);
-      }}
-     >
-      <img
-       src={menuOpened ? closeIcon : hamburgerIcon}
-       alt="Menu icon"
-      ></img>
-     </button>
-    </div>
-    <ul style={{ display: menuOpened ? "flex" : "none" }}>
-     <li>
-      <button>Search</button>
-     </li>
-     <li>
-      <button onClick={() => handleCollapseExpandAll("expand")}>
-       Expand all
-      </button>
-     </li>
-     <li>
-      <button onClick={() => handleCollapseExpandAll("collapse")}>
-       Collapse all
-      </button>
-     </li>
-    </ul>
-   </div> */}
-   <div className="columns-wrapper">
-    <ul>
-     <h2>Products</h2>
-     {Object.keys(productsToAdd).map(category => {
-      if (productsToAdd[category].length === 0) return null;
-      else
-       return (
-        <CategoryWrapper
-         key={category}
-         category={category}
-        >
-         {productsToAdd[category].map(product => (
-          <li key={product._id}>
-           <Card>
-            <span>{product.name}</span>
-            <Button
-             variant="positive"
-             onClick={() => switchProductStatus(product)}
-            >
-             Add
-            </Button>
-           </Card>
-          </li>
-         ))}
-        </CategoryWrapper>
-       );
-     })}
-    </ul>
-    <ul>
-     <h2>List</h2>
-     {Object.keys(productsOnList).map(category => {
-      if (productsOnList[category].length === 0) return null;
-      else
-       return (
-        <CategoryWrapper
-         key={category}
-         category={category}
-        >
-         {productsOnList[category].map(product => (
-          <li key={product._id}>
-           <Card>
-            <span>{product.name}</span>
-            <Button
-             variant="negative"
-             onClick={() => switchProductStatus(product)}
-            >
-             Remove
-            </Button>
-           </Card>
-          </li>
-         ))}
-        </CategoryWrapper>
-       );
-     })}
-    </ul>
-   </div>
-  </PageContent>
+  <>
+   {searchPhrase !== null && (
+    <Toolbar closeAction={() => setSearchPhrase(null)} />
+   )}
+   {searchPhrase === null && (
+    <Toolbar
+     backPath="/"
+     backLabel="Shoppin"
+     menuItems={menuItems}
+    />
+   )}
+   <PageContent className="with-nav">
+    {searchPhrase !== null && (
+     <SearchBox
+      onChange={value => setSearchPhrase(value)}
+      placeholder="Search"
+     />
+    )}
+    {searchPhrase === null && <h1>Compose</h1>}
+    <List
+     variant="compose"
+     searchPhrase={searchPhrase}
+    />
+   </PageContent>
+  </>
  );
 };
 

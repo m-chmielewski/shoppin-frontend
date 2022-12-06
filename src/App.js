@@ -1,15 +1,13 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import "./Pages/MediaQueries.css";
-
 import { useRegularVision } from "@mchm/common";
 import { StylingProvider } from "@mchm/common";
 
 import Home from "./Pages/Home";
 import SignIn from "./Pages/SignIn";
-import Compose from "./Pages/Compose";
-import Shop from "./Pages/Shop";
+import ComposeAlt from "./Pages/Compose";
+import ShopAlt from "./Pages/Shop";
 import AddProduct from "./Pages/AddProduct";
 import Settings from "./Pages/Settings";
 
@@ -45,11 +43,11 @@ const App = () => {
      />
      <Route
       path="/compose/"
-      element={<Compose />}
+      element={<ComposeAlt />}
      />
      <Route
       path="/shop/"
-      element={<Shop />}
+      element={<ShopAlt />}
      />
      <Route
       path="/addProduct/"

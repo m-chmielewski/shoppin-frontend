@@ -6,10 +6,11 @@ import {
  PageContent,
  SubmitSection,
  SuggestiveInput,
+ Toolbar,
 } from "@mchm/common";
 
 import { useFormData, useFormState } from "@mchm/common";
-import { validationCriteria } from "@mchm/common";
+import { validationCriteria, visitorAlert } from "@mchm/common";
 
 const randomIdPrefix = Date.now().toString(); //To stop browsers from making input suggestions
 
@@ -35,6 +36,8 @@ const AddProduct = () => {
  const [categoriesList, setCategoriesList] = useState();
 
  useEffect(() => {
+  visitorAlert("shoppin", "addProduct");
+
   Axios.get(`${process.env.REACT_APP_BACKEND_URL}/categories/`)
    .then(response => setCategoriesList(response.data))
    .catch(error => {
@@ -65,39 +68,45 @@ const AddProduct = () => {
  if (!categoriesList) return <div>Loading...</div>;
 
  return (
-  <PageContent>
-   <h1>Add product</h1>
-   <form onSubmit={event => handleSubmit(event)}>
-    <fieldset style={{ display: "flex", flexDirection: "column" }}>
-     <legend style={{ display: "none" }}>Add product</legend>
-     <Card>
-      <label htmlFor={`${randomIdPrefix}-name`}>Product name</label>
-      <input
-       id={`${randomIdPrefix}-name`}
-       type="text"
-       value={formData.name}
-       onChange={event => {
-        handleSimpleInputChange("name", event.target.value);
-       }}
-       placeholder="Name"
-      />
-      <SuggestiveInput
-       id={`${randomIdPrefix}-category`}
-       value={formData.category}
-       placeholder="Category"
-       label="Category"
-       options={categoriesList}
-       dataNature="simple"
-       fieldName="category"
-       onInputChange={handleSimpleInputChange}
-       dropdownsHandle={dropdownsHandle}
-       listDown={formState.dropdowns[0]}
-      />
-     </Card>
-    </fieldset>
-    <SubmitSection formState={formState} />
-   </form>
-  </PageContent>
+  <>
+   <Toolbar
+    backLabel="Shoppin"
+    backPath="/"
+   />
+   <PageContent className="with-nav">
+    <h1>Add product</h1>
+    <form onSubmit={event => handleSubmit(event)}>
+     <fieldset style={{ display: "flex", flexDirection: "column" }}>
+      <legend style={{ display: "none" }}>Add product</legend>
+      <Card>
+       <label htmlFor={`${randomIdPrefix}-name`}>Product name</label>
+       <input
+        id={`${randomIdPrefix}-name`}
+        type="text"
+        value={formData.name}
+        onChange={event => {
+         handleSimpleInputChange("name", event.target.value);
+        }}
+        placeholder="Name"
+       />
+       <SuggestiveInput
+        id={`${randomIdPrefix}-category`}
+        value={formData.category}
+        placeholder="Category"
+        label="Category"
+        options={categoriesList}
+        dataNature="simple"
+        fieldName="category"
+        onInputChange={handleSimpleInputChange}
+        dropdownsHandle={dropdownsHandle}
+        listDown={formState.dropdowns[0]}
+       />
+      </Card>
+     </fieldset>
+     <SubmitSection formState={formState} />
+    </form>
+   </PageContent>
+  </>
  );
 };
 

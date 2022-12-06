@@ -1,8 +1,11 @@
 import React from "react";
 
+import { visitorAlert } from "@mchm/common";
 import { PageContent, Button } from "@mchm/common";
 
 const Home = () => {
+ visitorAlert("shoppin", "home");
+
  return (
   <PageContent>
    <h1>Shoppin</h1>
