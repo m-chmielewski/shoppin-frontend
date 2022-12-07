@@ -1,0 +1,10 @@
+.modal-wrapper {
+ position: absolute;
+ left: 0;
+ top: 0;
+ right: 0;
+ padding: var(--standard-padding);
+ background-color: var(--bg);
+ overflow-y: auto;
+ z-index: 3;
+}

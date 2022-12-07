@@ -1,6 +1,7 @@
 Now:
   - add to list when adding product
   - edit/remove product
+  - Collapse category once last item inCart
   
 compose
   "add product" button

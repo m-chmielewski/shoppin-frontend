@@ -1,81 +1,154 @@
-import React, { useState, useCallback } from "react";
-import Axios from "axios";
+import React, { useEffect, useState } from "react";
 
-import { CategoryWrapper, Fetcher, SelectableCard } from "@mchm/common";
+import { visitorAlert } from "@mchm/common";
+import {
+ CategoryWrapper,
+ Fetcher,
+ PageContent,
+ SelectableCard,
+ Toolbar,
+} from "@mchm/common";
 
-import { productsHandle } from "../Utils/productsHandle";
+import { capitalize } from "../Utils/text";
 
 import useList from "../Hooks/useList";
 
+import Modal from "./Modal";
+import SearchBox from "./SearchBox";
+
 const List = props => {
- const { products, setProducts } = useList();
-
- let stateSwitch;
-
- if (props.variant === "compose") {
-  stateSwitch = "onList";
- } else if (props.variant === "shop") {
-  stateSwitch = "inCart";
- } else {
+ if (!["shop", "compose"].includes(props.variant)) {
   throw new Error("Provide valid List.variant");
  }
 
- //  const [products, setProducts] = useState();
+ const [modal, setModal] = useState();
 
- const onFetched = useCallback(
-  data => {
-   Object.values(data).forEach(category => {
-    category.sort((a, b) => productsHandle.sorter(a, b, stateSwitch));
-   });
-   setProducts(data);
+ const {
+  products,
+  searchPhrase,
+  setSearchPhrase,
+  dropdowns,
+  setDropdowns,
+  onFetched,
+  selectionHandle,
+  categoriesProvider,
+  allInCart,
+  stateSwitch,
+  searchResult,
+  finalizeList,
+ } = useList(props.variant);
+
+ const menuItems = [
+  {
+   name: "Search",
+   action: () => setSearchPhrase(""),
   },
-  [stateSwitch, setProducts]
- );
+  {
+   name: "Expand all",
+   action: () => {
+    const newDropdownsObj = {};
+    Object.keys(dropdowns).forEach(category => {
+     newDropdownsObj[category] = true;
+    });
+    setDropdowns(newDropdownsObj);
+   },
+  },
+  {
+   name: "Collapse all",
+   action: () => {
+    const newDropdownsObj = {};
+    Object.keys(dropdowns).forEach(category => {
+     newDropdownsObj[category] = false;
+    });
+    setDropdowns(newDropdownsObj);
+   },
+  },
+ ];
 
- const selectionHandle = productName => {
-  const selectedProduct = productsHandle
-   .flattenedList(products)
-   .filter(product => product.name === productName)[0];
-
-  Axios.post(
-   `${process.env.REACT_APP_BACKEND_URL}/products/updateOne/${props.variant}`,
-   {
-    name: selectedProduct.name,
-    [stateSwitch]: !selectedProduct[stateSwitch],
-   }
-  ).catch(error => console.log(error));
-
-  setProducts(current => {
-   const mutableArray = current[selectedProduct.category];
-   const index = mutableArray.indexOf(selectedProduct);
-   mutableArray[index][stateSwitch] = !mutableArray[index][stateSwitch];
-   mutableArray.sort((a, b) => productsHandle.sorter(a, b, stateSwitch));
-   return { ...current, [selectedProduct.category]: mutableArray };
+ if (props.variant === "shop") {
+  menuItems.push({
+   name: "Done",
+   action: () => {
+    let noneLeft = true;
+    Object.keys(products).forEach(category => {
+     noneLeft = noneLeft && allInCart(category);
+    });
+    if (!noneLeft) {
+     setModal({
+      message:
+       "There are unchecked items on the list.\nSave them for next one?",
+      onConfirm: () => {
+       finalizeList(true).then(() => setModal(null));
+      },
+      onDecline: () => {
+       finalizeList(false).then(() => setModal(null));
+      },
+      onCancel: () => setModal(null),
+     });
+    } else {
+     setModal({
+      message: "Are you sure?",
+      onConfirm: () => {
+       finalizeList(false).then(() => setModal(null));
+      },
+      onCancel: () => setModal(null),
+     });
+    }
+   },
   });
- };
+ }
+
+ useEffect(() => {
+  visitorAlert("shoppin", `${props.variant}`);
+ }, [props.variant]);
+
+ if (modal?.message) {
+  return <Modal {...modal} />;
+ }
 
  return (
   <>
-   <Fetcher
-    url={`${process.env.REACT_APP_BACKEND_URL}/products/forList/${props.variant}`}
-    onFetched={onFetched}
-    dataName="list"
-   />
-   {products && props.searchPhrase === null && (
-    <ul>
-     {productsHandle
-      .categoriesProvider(products, props.variant)
-      .map(category => (
+   {searchPhrase !== null && (
+    <Toolbar closeAction={() => setSearchPhrase(null)} />
+   )}
+   {searchPhrase === null && (
+    <Toolbar
+     backPath="/"
+     backLabel="Shoppin"
+     menuItems={menuItems}
+    />
+   )}
+   <PageContent className="with-nav">
+    {searchPhrase !== null && (
+     <SearchBox
+      onChange={value => setSearchPhrase(value)}
+      placeholder="Search"
+     />
+    )}
+    {searchPhrase === null && <h1>{capitalize(props.variant)}</h1>}
+    <Fetcher
+     url={`${process.env.REACT_APP_BACKEND_URL}/products/forList/${props.variant}`}
+     onFetched={onFetched}
+     dataName="list"
+    />
+    {products && searchPhrase === null && (
+     <ul>
+      {categoriesProvider().map(category => (
        <CategoryWrapper
         category={category}
         key={category}
-        crossedOut={
-         props.variant === "shop"
-          ? productsHandle.allInCart(products, category)
-          : false
+        crossedOut={props.variant === "shop" ? allInCart(category) : false}
+        expanded={dropdowns[category]}
+        onClick={() =>
+         setDropdowns(current => {
+          return {
+           ...current,
+           [category]: !current[category],
+          };
+         })
         }
        >
-        {products[category].map((product, index) => {
+        {products[category].map(product => {
          return (
           <SelectableCard
            key={product.name}
@@ -88,21 +161,22 @@ const List = props => {
         })}
        </CategoryWrapper>
       ))}
-    </ul>
-   )}
-   {products && props.searchPhrase && (
-    <ul>
-     {productsHandle.searchResult(products, props.searchPhrase).map(product => (
-      <SelectableCard
-       key={product.name}
-       onClick={() => selectionHandle(product.name)}
-       selected={product[stateSwitch]}
-      >
-       {product.name}
-      </SelectableCard>
-     ))}
-    </ul>
-   )}
+     </ul>
+    )}
+    {products && searchPhrase && (
+     <ul>
+      {searchResult().map(product => (
+       <SelectableCard
+        key={product.name}
+        onClick={() => selectionHandle(product.name)}
+        selected={product[stateSwitch]}
+       >
+        {product.name}
+       </SelectableCard>
+      ))}
+     </ul>
+    )}
+   </PageContent>
   </>
  );
 };

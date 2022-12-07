@@ -6,8 +6,7 @@ import { StylingProvider } from "@mchm/common";
 
 import Home from "./Pages/Home";
 import SignIn from "./Pages/SignIn";
-import ComposeAlt from "./Pages/Compose";
-import ShopAlt from "./Pages/Shop";
+import List from "./Components/List";
 import AddProduct from "./Pages/AddProduct";
 import Settings from "./Pages/Settings";
 
@@ -43,11 +42,11 @@ const App = () => {
      />
      <Route
       path="/compose/"
-      element={<ComposeAlt />}
+      element={<List variant="compose" />}
      />
      <Route
       path="/shop/"
-      element={<ShopAlt />}
+      element={<List variant="shop" />}
      />
      <Route
       path="/addProduct/"
